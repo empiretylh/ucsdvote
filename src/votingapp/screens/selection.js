@@ -1,4 +1,4 @@
-import React, { useRef, useState, useContext, useMemo } from "react";
+import React, { useRef, useState, useContext, useMemo,useEffect } from "react";
 
 import {
     Col,
@@ -27,6 +27,7 @@ import {
     Boxes,
     CloudArrowUp,
     Search,
+    Clock,
     Wallet,
     Trash,
     Images,
@@ -35,6 +36,42 @@ import {
 } from "react-bootstrap-icons";
 import axios from "axios";
 import ImageUpload from "./ImageUpload";
+
+
+function formatMilliseconds(milliseconds) {
+  const seconds = Math.floor(milliseconds / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  return milliseconds >=0 ?`${days} days, ${hours % 24} hours, ${minutes % 60} minutes, ${seconds % 60} seconds`:'Finished time';
+}
+
+
+function CountdownTimer(props) {
+  const { startDate, endDate } = props;
+
+  // console.log(startDate,endDate,'WHsodjfoajsdokfjojs;kdjf')
+  const [timeLeft, setTimeLeft] = useState(endDate.getTime() - startDate.getTime()); // Initialize timeLeft to the difference between the start and end dates
+
+  useEffect(() => {
+
+    const timer = setInterval(() => {
+        if(timeLeft>=0){
+     setTimeLeft(timeLeft - 1000);
+     } // Decrement timeLeft by 1000 milliseconds (1 second)
+    }, 1000); // Update timeLeft every second
+
+    return () => clearInterval(timer); // Clean up the timer when the component unmounts
+  }, [timeLeft]); // Only re-run the effect when timeLeft changes
+
+  return (
+    <div>
+        {formatMilliseconds(timeLeft)}
+    </div>
+  );
+}
+
 const QRCard = React.memo(({ item, Ondelete,onImageOpen }) => {
     const [deleteShow, setDeleteShow] = useState(false);
    
@@ -134,6 +171,27 @@ const QRCard = React.memo(({ item, Ondelete,onImageOpen }) => {
     );
 });
 
+
+const Person  = React.memo(({item,count})=>{
+
+    return(
+        <div style={{marginBottom: 10,padding:15, backgroundColor: 'blue',color:'white',display: 'flex',flexDirection:'row',borderRadius: 20 }}>
+             <img
+                src={item && axios.defaults.baseURL + item.profileimage}
+                alt={item && item.name}
+                className='result_profile'
+           
+            />
+            <div style={{display: 'flex',flexDirection:'column',marginLeft:10 }}>
+                    <h5 style={{fontFamily:'Roboto-Bold'}}>{item.name}</h5>
+                <h6 style={{fontFamily:'Roboto-Regular'}}>{item.year}</h6>
+                 <h6 style={{fontFamily:'Roboto-Regular'}}>Vote : {item.count}</h6>
+            </div>
+        </div>
+        )
+
+});
+
 const Selection = () => {
     const titleRef = useRef(0);
     const dateRef = useRef(0);
@@ -165,9 +223,28 @@ const Selection = () => {
         { name: "All", value: "All" },
         { name: "King", value: "king" },
         { name: "Queen", value: "queen" },
+        {name:"Voting Result" ,value:"vr"}
     ];
 
     const all_data = useQuery(["voting_data", votingcode], services.getVoting);
+
+
+    const KingResult =  useQuery(['kingresult',votingcode],services.getKingResult)
+    const QueenResult =  useQuery(['queenresult',votingcode],services.getQueenResult)
+
+
+    useEffect(()=>{
+        if(radioValue==='vr'){
+            KingResult.refetch();
+            QueenResult.refetch();
+        }
+    },[radioValue])
+
+    const  votingendtime = useMemo(()=>{
+        if(all_data.data){
+            return new Date(all_data.data.data.end_time);
+        }
+    },[all_data.data])
 
 
       const onImageHide = () => {
@@ -194,6 +271,7 @@ const Selection = () => {
         onMutate: () => {},
         onSuccess: () => {
             all_data.refetch();
+
         },
     });
 
@@ -205,7 +283,7 @@ const Selection = () => {
     });
 
     const DeletePeople = (item) => {
-        console.log("Deleteing Peopleing......");
+        // console.log("Deleteing Peopleing......");
         if (item.is_male) {
             deleteKing.mutate({
                 id: item.id,
@@ -230,7 +308,7 @@ const Selection = () => {
                 all = sel_king.concat(sel_queen);
             }else if(radioValue==='king'){
                 all = sel_king;
-            }else{
+            }else if(radioValue==='queen'){
                  all = sel_queen;
             }   
 
@@ -241,14 +319,195 @@ const Selection = () => {
         return {};
     }, [all_data.data,radioValue]);
 
+    const [stimeshow,setSTimeShow] = useState(false);
+
+    const timechange = useMutation(services.setVotingEndTime,{
+        onMutate:(e)=>{
+
+        },
+        onSuccess:(e)=>{
+            all_data.refetch();
+            alert('Time Successfully Updated')
+        }
+
+    })
+
+
+    const SelToKing =(sel,count)=>{
+        if(all_data.data){
+         const d = all_data.data.data;
+            const sel_king = d.sel_king;
+            
+
+
+            const f = sel_king.filter((i)=> {
+
+                // console.log(sel,'search',i.id)
+
+               return i.id==sel
+
+
+            })
+            // console.log(f[0],'Found Data')
+            
+
+            return Object.assign({}, JSON.parse(JSON.stringify(f[0])), {count:count});
+        }
+
+        return 0;
+    }
+
+
+    const SelToQueen =(sel,count)=>{
+        if(all_data.data){
+         const d = all_data.data.data;
+            
+            const sel_queen = d.sel_queen;
+
+
+            const f = sel_queen.filter((i)=> {
+
+                 console.log(sel,'search',i.id)
+
+               return i.id==sel
+
+
+            })
+            // console.log(f[0],'Found Data')
+            
+
+            return  Object.assign({}, JSON.parse(JSON.stringify(f[0])), {count:count});
+        }
+
+        return 0;
+    }
+    const display_king = useMemo(()=>{
+        if(KingResult.data){
+
+            const  d =  KingResult.data.data; 
+
+            const counts = {}
+
+           for (const obj of d) {
+             // Get the value to count
+            const value = obj.selection;
+
+            // If the value is already a key in the counts object, increment the count
+            if (counts[value]) {
+              counts[value]++;
+            }
+            // Otherwise, add the value to the object with a count of 1
+            else {
+              counts[value] = 1;
+            }
+            }
+
+          return counts;
+        }
+    },[KingResult.data])
+
+    const display_queen = useMemo(()=>{
+        if(QueenResult.data){
+
+            const  d =  QueenResult.data.data; 
+
+            const counts = {}
+
+           for (const obj of d) {
+             // Get the value to count
+            const value = obj.selection;
+
+            // If the value is already a key in the counts object, increment the count
+            if (counts[value]) {
+              counts[value]++;
+            }
+            // Otherwise, add the value to the object with a count of 1
+            else {
+              counts[value] = 1;
+            }
+            }
+
+          return counts;
+        }
+    },[QueenResult.data])
+
+
+
+
     return (
         <div
             style={{
                 display: "flex",
                 backgroundColor: "#f0f0f0",
                 minHeight: "100vh",
-            }}
-        >
+            }}>{stimeshow&&
+                    
+                            <Modal
+                                show={stimeshow}
+                                size="md"
+                                aria-labelledby="contained-modal-title-vcenter"
+                                centered
+                            >
+                                <Modal.Body>
+                                    <Form.Group
+                                        className="mb-3"
+                                        controlId="register-control"
+                                    >
+                                        
+                                        <Form.Label>End Date & Time</Form.Label>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                flexDirection: "row",
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            <Form.Control
+                                                type="date"
+                                                className="mb-3"
+                                                placeholder="Date"
+                                                required
+                                                defaultValue={new Date(votingendtime).toISOString().split('T')[0]}
+            
+                                                ref={dateRef}
+                                                // ref={r_name}
+                                            />
+                                            <Form.Control
+                                                type="time"
+                                                className="mb-3"
+                                                placeholder="Voting Title"
+                                                required
+                                                defaultValue={new Date(votingendtime).toTimeString().split(' ')[0]}
+                                                ref={timeRef}
+                                                // ref={r_name}
+                                            />
+                                        </div>
+                                    </Form.Group>
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <Button
+                                        variant={"danger"}
+                                         onClick={(e) => setSTimeShow(false)}
+                                    >
+                                        Discard
+                                    </Button>
+                                    <Button
+                                        variant={"primary"}
+                                        onClick={()=>{
+                                            timechange.mutate({
+                                                votingcode:votingcode,
+                                                endtime: dateRef.current.value + " " + timeRef.current.value,
+                                            });
+
+                                            setSTimeShow(false);
+                                        }}
+                                        // onClick={CreateVoting}
+                                        // onClick={(e) => setModalShow(false)}
+                                    >
+                                        Set Time
+                                    </Button>
+                                </Modal.Footer>
+                            </Modal>}
 
             {imgshow&&<ImageUpload show={imgshow} onHide={onImageHide} item={Sel_Item}  />}
             <Modal
@@ -370,6 +629,13 @@ const Selection = () => {
             </Modal>
             <Container style={{ marginTop: 10 }}>
                 <h3>Create Selection</h3>
+                  <div style={{
+                    display:'flex',
+                    flexDirection:'row',
+                    justifyContent: 'flex-end',
+                  }}>
+                     {all_data.data&&   <CountdownTimer startDate={new Date()} endDate={votingendtime}/>}
+                    </div>
                 <div
                     style={{
                         display: "flex",
@@ -396,10 +662,14 @@ const Selection = () => {
                         ))}
                     </ButtonGroup>
                     <div>
+                  
+
                         <ButtonGroup>
+                     
                             <Button
                                 variant="outline-dark"
                                 style={{ alignItems: "center" }}
+                                 disabled={radioValue==='queen'}
                                 onClick={() => {
                                     setWhoS("king");
                                     setAkShow(true);
@@ -420,6 +690,7 @@ const Selection = () => {
                             <Button
                                 variant="outline-dark"
                                 style={{ alignItems: "center" }}
+                                 disabled={radioValue==='king'}
                                 onClick={() => {
                                     setWhoS("queen");
                                     setAkShow(true);
@@ -437,16 +708,45 @@ const Selection = () => {
                                 />
                                 Add Queen
                             </Button>
+                               <Button
+                                variant="outline-dark"
+                                style={{ alignItems: "center" }}
+                                // disabled={radioValue==='queen'}
+                                onClick={() => {
+                                   setSTimeShow(true);
+                                }}
+                            >
+                               <Clock size={25} /> Change End Time
+                            </Button>
+
                         </ButtonGroup>
                     </div>
                 </div>
+               {radioValue === 'vr'?   <Row style={{marginTop: 50}}>
+                    <Col >
+                        {
+                       all_data.data&& display_king && Object.keys(display_king).map((item,index)=>(
+
+                                <Person item={SelToKing(item,display_king[item])} key={index}/>))
+                        }
+                    </Col>
+                     <Col>
+                        {
+                       all_data.data&& display_queen && Object.keys(display_queen).map((item,index)=>(
+                                <Person item={SelToQueen(item,display_queen[item])} key={index}/>))
+                        }
+                    </Col>
+                </Row> :
                 <div className={"profile_card"} style={{ marginTop: 50 }}>
                     {/* {JSON.stringify(all_data.data)} */}
+                    
                     {all_data.data &&
                         display_data.map((item, index) => (
                             <QRCard item={item} Ondelete={DeletePeople} onImageOpen={onImageOpen} />
                         ))}
                 </div>
+              
+            }
             </Container>
         </div>
     );

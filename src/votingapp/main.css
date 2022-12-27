@@ -35,6 +35,14 @@
 	border: solid red 2px;
 }
 
+.result_profile{
+	width:80px;
+	height:80px;
+	border-radius:80px;
+	border: solid blue 2px;
+	object-fit:cover;
+}
+
 .bglogin {
 	/*background-color:red;*/
 	background-image: url("../assets/voting/bg.webp");

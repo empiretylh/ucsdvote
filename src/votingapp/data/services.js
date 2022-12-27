@@ -16,6 +16,10 @@ class AuthService {
     return axios.get(API_URL + "/api/createvotingcode/");
   }
 
+  setVotingEndTime(data){
+    return axios.put(API_URL+"/api/createvotingcode/",data);
+  }
+
   getVoting({ queryKey }) {
     const [_, votingcode] = queryKey;
     return axios.get(API_URL + "/api/votingm/", {
@@ -102,6 +106,28 @@ class AuthService {
       },
     });
   }
+
+
+  getKingResult({queryKey}){
+    const [_,votingcode] = queryKey;
+    return axios.get('/api/kingresult/',{
+      params:{
+        votingcode:votingcode,
+      }
+    })
+
+  }
+
+  getQueenResult({queryKey}){
+    const [_,votingcode] = queryKey;
+    return axios.get('/api/queenresult/',{
+      params:{
+        votingcode:votingcode,
+      }
+    })
+
+  }
+
 
   admin() {
     axios.get(API_URL + "/login").then((res) => console.log(res));

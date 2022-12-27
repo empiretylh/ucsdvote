@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import axios from "axios";
 import { baseURL } from "./data/data";
 
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes ,HashRouter} from "react-router-dom";
 
 import Home from "./screens/home";
 import Login from "./screens/login";
@@ -59,7 +59,7 @@ const VotingMain = () => {
     <QueryClientProvider client={queryClient}>
     <TokenContext.Provider value={tokenValue} >
     
-    <Router>
+    <HashRouter>
     {token === null? null: <NavBar />}
       <Routes>
         {token === null ? (
@@ -73,7 +73,7 @@ const VotingMain = () => {
           </>
         )}
       </Routes>
-    </Router>
+    </HashRouter>
 
     </TokenContext.Provider>
     </QueryClientProvider>
