@@ -183,9 +183,9 @@ const Person  = React.memo(({item,count})=>{
            
             />
             <div style={{display: 'flex',flexDirection:'column',marginLeft:10 }}>
-                    <h5 style={{fontFamily:'Roboto-Bold'}}>{item.name}</h5>
-                <h6 style={{fontFamily:'Roboto-Regular'}}>{item.year}</h6>
-                 <h6 style={{fontFamily:'Roboto-Regular'}}>Vote : {item.count}</h6>
+                    <h5 style={{fontFamily:'Roboto-Bold'}}>{item &&item.name}</h5>
+                <h6 style={{fontFamily:'Roboto-Regular'}}>{item && item.year}</h6>
+                 <h6 style={{fontFamily:'Roboto-Regular'}}>Vote : {item && item.count}</h6>
             </div>
         </div>
         )
@@ -333,103 +333,104 @@ const Selection = () => {
     })
 
 
-    const SelToKing =(sel,count)=>{
-        if(all_data.data){
-         const d = all_data.data.data;
-            const sel_king = d.sel_king;
-            
 
-
-            const f = sel_king.filter((i)=> {
-
-                // console.log(sel,'search',i.id)
-
-               return i.id==sel
-
-
-            })
-            // console.log(f[0],'Found Data')
-            
-
-            return Object.assign({}, JSON.parse(JSON.stringify(f[0])), {count:count});
-        }
-
-        return 0;
-    }
-
-
-    const SelToQueen =(sel,count)=>{
-        if(all_data.data){
-         const d = all_data.data.data;
-            
-            const sel_queen = d.sel_queen;
-
-
-            const f = sel_queen.filter((i)=> {
-
-                 console.log(sel,'search',i.id)
-
-               return i.id==sel
-
-
-            })
-            // console.log(f[0],'Found Data')
-            
-
-            return  Object.assign({}, JSON.parse(JSON.stringify(f[0])), {count:count});
-        }
-
-        return 0;
-    }
     const display_king = useMemo(()=>{
-        if(KingResult.data){
+        if(all_data.data){
+        if(KingResult.data && all_data.data){
 
             const  d =  KingResult.data.data; 
 
+            const d2 = all_data.data.data;
+            const sel_king = d2.sel_king;
+           
+
+
             const counts = {}
 
            for (const obj of d) {
              // Get the value to count
             const value = obj.selection;
+            const f = sel_king && sel_king.filter((i)=> {
+                console.log(i,value)
+               return i.id===value
+
+            })
+
 
             // If the value is already a key in the counts object, increment the count
             if (counts[value]) {
-              counts[value]++;
+              counts[value].count  = counts[value].count+1;
             }
             // Otherwise, add the value to the object with a count of 1
             else {
-              counts[value] = 1;
+              counts[value] = f && Object.assign({}, JSON.parse(JSON.stringify(f[0])), {count:1});;
             }
             }
 
-          return counts;
+
+            const final  = Object.values(counts)
+
+            const result = final.sort((a,b)=> b.count - a.count)
+         
+
+
+           
+
+          return result;
         }
-    },[KingResult.data])
+    }
+    },[KingResult.data,all_data.data])
 
-    const display_queen = useMemo(()=>{
-        if(QueenResult.data){
+
+     const display_queen = useMemo(()=>{
+        if(all_data.data){
+        if(QueenResult.data && all_data.data){
 
             const  d =  QueenResult.data.data; 
 
+            const d2 = all_data.data.data;
+            const sel_queen = d2.sel_queen;
+           
+
+
             const counts = {}
 
            for (const obj of d) {
              // Get the value to count
             const value = obj.selection;
+            const f = sel_queen && sel_queen.filter((i)=> {
+                console.log(i,value)
+               return i.id===value
+
+            })
+
 
             // If the value is already a key in the counts object, increment the count
             if (counts[value]) {
-              counts[value]++;
+              counts[value].count  = counts[value].count+1;
             }
             // Otherwise, add the value to the object with a count of 1
             else {
-              counts[value] = 1;
+              counts[value] = f && Object.assign({}, JSON.parse(JSON.stringify(f[0])), {count:1});;
             }
             }
 
-          return counts;
+
+            const final  = Object.values(counts)
+
+            const result = final.sort((a,b)=> b.count - a.count)
+         
+
+
+           
+
+          return result;
         }
-    },[QueenResult.data])
+    }
+    },[QueenResult.data,all_data.data])
+
+
+   
 
 
 
@@ -725,15 +726,15 @@ const Selection = () => {
                {radioValue === 'vr'?   <Row style={{marginTop: 50}}>
                     <Col >
                         {
-                       all_data.data&& display_king && Object.keys(display_king).map((item,index)=>(
+                       all_data.data&& display_king &&display_king.map((item,index)=>(
 
-                                <Person item={SelToKing(item,display_king[item])} key={index}/>))
+                                <Person item={item} key={index}/>))
                         }
                     </Col>
                      <Col>
                         {
-                       all_data.data&& display_queen && Object.keys(display_queen).map((item,index)=>(
-                                <Person item={SelToQueen(item,display_queen[item])} key={index}/>))
+                       all_data.data&& display_queen && display_queen.map((item,index)=>(
+                                <Person item={item} key={index}/>))
                         }
                     </Col>
                 </Row> :
