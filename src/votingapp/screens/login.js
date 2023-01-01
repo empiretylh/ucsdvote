@@ -13,6 +13,7 @@ import {
 import services from "../data/services";
 import { TokenContext } from "../context/Context";
 import { useMutation } from "react-query";
+import { IMAGE } from "../../assets/assets";
 const Login = () => {
   const loginSubmit = () => {
     console.log("Login Submit");
@@ -22,8 +23,12 @@ const Login = () => {
 
   const { token, setToken } = useContext(TokenContext);
 
-  const [modalShow,setModalShow] = useState(false);
-  const [modalText,setModalText] = useState("Username Or Password is incorrect. Please try agian. If you forgot your password contact your adminstatior.");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [modalShow, setModalShow] = useState(false);
+  const [modalText, setModalText] = useState(
+    "Username Or Password is incorrect. Please try agian. If you forgot your password contact your adminstatior."
+  );
 
   const r_name = useRef(0);
   const r_username = useRef(0);
@@ -38,41 +43,46 @@ const Login = () => {
     onSuccess: (e) => {
       localStorage.setItem("user_token", e.data.token);
       setToken(e.data.token);
+      setIsLoading(false);
     },
     onMutate: (e) => {
+      setIsLoading(true);
       // console.log('mutating')
     },
-    onError:(e)=>{
-        setModalText("Register Error, When your username is exisiting in our server, You cannot not register, So change your username to register.")
-      setModalShow(true); 
-   }
-
+    onError: (e) => {
+      setIsLoading(false);
+      setModalText(
+        "Register Error, When your username is exisiting in our server, You cannot not register, So change your username to register."
+      );
+      setModalShow(true);
+    },
   });
 
-  const LoginS = useMutation(services.login,{
-    onSuccess:(e)=>{
+  const LoginS = useMutation(services.login, {
+    onSuccess: (e) => {
       localStorage.setItem("user_token", e.data.token);
       setToken(e.data.token);
+      setIsLoading(false);
     },
-    onMutate:(e)=>{
-
+    onMutate: (e) => {
+      setIsLoading(true);
     },
-    onError:(e)=>{
-      setModalText("Username Or Password is incorrect. Please try agian. If you forgot your password contact your adminstatior.");
-       setModalShow(true); 
-    }
-  })
-
+    onError: (e) => {
+      setModalText(
+        "Username Or Password is incorrect. Please try agian. If you forgot your password contact your adminstatior."
+      );
+      setModalShow(true);
+      setIsLoading(false);
+    },
+  });
 
   const onLoginClick = () => {
-
     LoginS.mutate({
-      username:l_username.current.value,
-      password:l_password.current.value,
+      username: l_username.current.value,
+      password: l_password.current.value,
     });
     // console.log(r_name.current.value)
   };
-
 
   const ONRegisterClick = () => {
     Register.mutate({
@@ -89,15 +99,22 @@ const Login = () => {
     <div className="login">
       <div className="bglogin" />
       <div className="bgcovercolor" />
-      <Modal show={modalShow} size="md" aria-labelledby="contained-modal-title-vcenter" centered>
-            <Modal.Body>
-          <h4 style={{color:'red'}}>Error</h4>
-          <p style={{color:'red',fontFamily: 'Roboto-Regular'}}>
-          {modalText}
+      <Modal
+        show={modalShow}
+        size="md"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Body>
+          <h4 style={{ color: "red" }}>Error</h4>
+          <p style={{ color: "red", fontFamily: "Roboto-Regular" }}>
+            {modalText}
           </p>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant={'danger'} onClick={e=>setModalShow(false)}>OK</Button>
+          <Button variant={"danger"} onClick={(e) => setModalShow(false)}>
+            OK
+          </Button>
         </Modal.Footer>
       </Modal>
       <Container fluid>
@@ -185,7 +202,7 @@ const Login = () => {
             ) : (
               <Form
                 onSubmit={(e) => {
-                 e.preventDefault();
+                  e.preventDefault();
                   onLoginClick();
                 }}
                 className={"loginForm"}
@@ -242,6 +259,35 @@ const Login = () => {
           </Col>
         </Row>
       </Container>
+      {isLoading && (
+        <div
+          style={{
+            position: "absolute",
+            width: "100vw",
+            height: "100vh",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            style={{
+              padding: 10,
+              backgroundColor: "white",
+              borderRadius: 15,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <img
+              src={IMAGE.loading}
+              style={{ width: 50, height: 50 }}
+              alt={"loading"}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

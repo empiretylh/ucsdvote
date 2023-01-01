@@ -16,8 +16,8 @@ class AuthService {
     return axios.get(API_URL + "/api/createvotingcode/");
   }
 
-  setVotingEndTime(data){
-    return axios.put(API_URL+"/api/createvotingcode/",data);
+  setVotingEndTime(data) {
+    return axios.put(API_URL + "/api/createvotingcode/", data);
   }
 
   getVoting({ queryKey }) {
@@ -46,27 +46,25 @@ class AuthService {
     });
   }
 
-
   getQueenImage({ queryKey }) {
     const [_, id] = queryKey;
     return axios.get(API_URL + "/api/selectionqueenimage/", {
       params: {
-        queenid:id
+        queenid: id,
       },
     });
   }
-
 
   getKingImage({ queryKey }) {
     const [_, id] = queryKey;
     return axios.get(API_URL + "/api/selectionkingimage/", {
       params: {
-        kingid:id
+        kingid: id,
       },
     });
   }
 
-   addKingImage(data) {
+  addKingImage(data) {
     return axios.post(API_URL + "/api/selectionkingimage/", data, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -107,27 +105,27 @@ class AuthService {
     });
   }
 
-
-  getKingResult({queryKey}){
-    const [_,votingcode] = queryKey;
-    return axios.get('/api/kingresult/',{
-      params:{
-        votingcode:votingcode,
-      }
-    })
-
+  getKingResult({ queryKey }) {
+    const [_, votingcode] = queryKey;
+    if (votingcode) {
+      return axios.get("/api/kingresult/", {
+        params: {
+          votingcode: votingcode,
+        },
+      });
+    }
   }
 
-  getQueenResult({queryKey}){
-    const [_,votingcode] = queryKey;
-    return axios.get('/api/queenresult/',{
-      params:{
-        votingcode:votingcode,
-      }
-    })
-
+  getQueenResult({ queryKey }) {
+    const [_, votingcode] = queryKey;
+    if (votingcode) {
+      return axios.get("/api/queenresult/", {
+        params: {
+          votingcode: votingcode,
+        },
+      });
+    }
   }
-
 
   admin() {
     axios.get(API_URL + "/login").then((res) => console.log(res));
