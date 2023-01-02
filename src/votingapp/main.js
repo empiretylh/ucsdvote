@@ -78,7 +78,7 @@ const VotingMain = () => {
   );
 
   const Logout = () => {
-    window.location.href='/';
+    window.location.href='/ucsdvote';
     services.logout();
     setToken(null);
     setWTLogout(false);
@@ -106,6 +106,7 @@ const VotingMain = () => {
                   ) : (
                     <>
                       <Route path="/" element={<Home />} />
+                      <Route path="/ucsdvote" element={<Home />} />
                       <Route path="/selection" element={<Selection />} />
                     </>
                   )}
