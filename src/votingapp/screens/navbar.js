@@ -19,7 +19,7 @@ const Navbar = () => {
             alignItems: "center",
 			cursor:"pointer"
           }}
-		  onClick={()=> window.location.href='/'}
+		  onClick={()=> window.location.href='%PUBLIC_URL%/'}
         >
           <img
             src={IMAGE.king}
