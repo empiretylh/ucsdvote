@@ -13,7 +13,11 @@ const Download = () => {
       <div>
         <h1>Choose your King and Queen Today</h1>
         <p>Remember to vote Bhone Nay Lin</p>
-        <img src={I.king}/>
+
+      </div>
+      <div>
+         <img src={I.ph1}/>
+          <img src={I.ph2}/>
       </div>
     </div>
   );

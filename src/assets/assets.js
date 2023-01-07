@@ -4,5 +4,6 @@ export const IMAGE = {
   queen:require("./voting/queen_crown.png"),
   loading:require('./voting/spinnerloading.gif'),
 
-  image:require("./voting/images.jpg")
+  ph1:require('./voting/ph1.webp'),
+  ph2:require('./voting/ph2.webp'),
 }
