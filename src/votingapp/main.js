@@ -9,7 +9,7 @@ import {
   HashRouter,
  
 } from "react-router-dom";
-
+import Download from "./screens/download";
 import Home from "./screens/home";
 import Login from "./screens/login";
 import Selection from "./screens/selection";
@@ -108,6 +108,7 @@ const VotingMain = () => {
                       <Route path="/" element={<Home />} />
                       <Route path="/ucsdvote" element={<Home />} />
                       <Route path="/selection" element={<Selection />} />
+                      <Route path="/download" element={<Download />} />
                     </>
                   )}
                 </Routes>

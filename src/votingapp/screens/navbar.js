@@ -37,7 +37,7 @@ const Navbar = () => {
           </h5>
         </div>
         <div style={{ display: "flex", flexDirection: "row" }}>
-          <Link to="/developer" className={"link"}>
+          <Link to="/download" className={"link"}>
             Download
           </Link>
           <Link to="/developer" className={"link"}>
