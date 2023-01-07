@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/ucsdvote/static/css/main.0e9713b4.css",
-    "main.js": "/ucsdvote/static/js/main.db59fd2d.js",
+    "main.js": "/ucsdvote/static/js/main.3283f6d3.js",
     "static/js/787.73fd9432.chunk.js": "/ucsdvote/static/js/787.73fd9432.chunk.js",
     "static/media/bg.webp": "/ucsdvote/static/media/bg.338d9624857c15a78763.webp",
     "static/media/Roboto-BlackItalic.ttf": "/ucsdvote/static/media/Roboto-BlackItalic.fd62a10743bd89a3d97c.ttf",
@@ -21,11 +21,11 @@
     "static/media/crown.png": "/ucsdvote/static/media/crown.0c9b91e156505dfee5ac.png",
     "index.html": "/ucsdvote/index.html",
     "main.0e9713b4.css.map": "/ucsdvote/static/css/main.0e9713b4.css.map",
-    "main.db59fd2d.js.map": "/ucsdvote/static/js/main.db59fd2d.js.map",
+    "main.3283f6d3.js.map": "/ucsdvote/static/js/main.3283f6d3.js.map",
     "787.73fd9432.chunk.js.map": "/ucsdvote/static/js/787.73fd9432.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.0e9713b4.css",
-    "static/js/main.db59fd2d.js"
+    "static/js/main.3283f6d3.js"
   ]
 }
