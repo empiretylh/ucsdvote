@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/ucsdvote/static/css/main.0e9713b4.css",
-    "main.js": "/ucsdvote/static/js/main.3283f6d3.js",
+    "main.js": "/ucsdvote/static/js/main.addbf439.js",
     "static/js/787.73fd9432.chunk.js": "/ucsdvote/static/js/787.73fd9432.chunk.js",
     "static/media/bg.webp": "/ucsdvote/static/media/bg.338d9624857c15a78763.webp",
     "static/media/Roboto-BlackItalic.ttf": "/ucsdvote/static/media/Roboto-BlackItalic.fd62a10743bd89a3d97c.ttf",
@@ -19,13 +19,15 @@
     "static/media/queen_crown.png": "/ucsdvote/static/media/queen_crown.d68645cd33d31909dbc2.png",
     "static/media/spinnerloading.gif": "/ucsdvote/static/media/spinnerloading.8327024f64dba9f2533c.gif",
     "static/media/crown.png": "/ucsdvote/static/media/crown.0c9b91e156505dfee5ac.png",
+    "static/media/ph1.webp": "/ucsdvote/static/media/ph1.e613b967a29577dada96.webp",
+    "static/media/ph2.webp": "/ucsdvote/static/media/ph2.5e392bab54ef99f9ef97.webp",
     "index.html": "/ucsdvote/index.html",
     "main.0e9713b4.css.map": "/ucsdvote/static/css/main.0e9713b4.css.map",
-    "main.3283f6d3.js.map": "/ucsdvote/static/js/main.3283f6d3.js.map",
+    "main.addbf439.js.map": "/ucsdvote/static/js/main.addbf439.js.map",
     "787.73fd9432.chunk.js.map": "/ucsdvote/static/js/787.73fd9432.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.0e9713b4.css",
-    "static/js/main.3283f6d3.js"
+    "static/js/main.addbf439.js"
   ]
 }
