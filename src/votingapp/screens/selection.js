@@ -71,7 +71,7 @@ function CountdownTimer(props) {
   return <div>{formatMilliseconds(timeLeft)}</div>;
 }
 
-const QRCard = React.memo(({ item, Ondelete, onImageOpen }) => {
+const QRCard = React.memo(({ item, Ondelete, onImageOpen, onEdit }) => {
   const [deleteShow, setDeleteShow] = useState(false);
 
   return (
@@ -146,6 +146,7 @@ const QRCard = React.memo(({ item, Ondelete, onImageOpen }) => {
           <Button
             variant="outline-warning"
             onClick={() => {
+              onEdit(item);
               // setDeleteShow(true);
               // Ondelete(item);
             }}
@@ -203,6 +204,17 @@ const Selection = () => {
 
   const { votingcode, setVotingCode } = useContext(VotingCodeContext);
 
+  const ConnectedDevice = useQuery(
+    ["connect_device", votingcode],
+    services.getDevice
+  );
+
+  const connectDeviceCount = useMemo(() => {
+    if(ConnectedDevice.data){
+      return ConnectedDevice.data && ConnectedDevice.data.data.length;
+    }
+  }, [ConnectedDevice.data]);
+
   useEffect(() => {
     if (!votingcode) {
       const f = async () => {
@@ -229,6 +241,8 @@ const Selection = () => {
 
   const [whoS, setWhoS] = useState(0);
   const [akShow, setAkShow] = useState(false);
+
+  const [ekShow, setEkShow] = useState(false);
 
   const nameRef = useRef(0);
   const yearRef = useRef(0);
@@ -386,6 +400,7 @@ const Selection = () => {
     }
   }, [KingResult.data, all_data.data]);
 
+  const [editid, setEditid] = useState(0);
   const display_queen = useMemo(() => {
     if (all_data.data) {
       if (QueenResult.data && all_data.data) {
@@ -426,6 +441,41 @@ const Selection = () => {
       }
     }
   }, [QueenResult.data, all_data.data]);
+
+  const editKing = useMutation(services.editKing, {
+    onSuccess: () => {
+      all_data.refetch();
+    },
+    onMutate: () => {},
+  });
+
+  const editQueen = useMutation(services.editqueen, {
+    onSuccess: () => {
+      all_data.refetch();
+    },
+    onMutate: () => {},
+  });
+  const onEdit = (data) => {
+    if (data.is_male) {
+      setWhoS("king");
+      setEditid(data.id);
+      nameRef.current = data.name;
+      yearRef.current = data.year;
+      igRef.current = data.iglink;
+      fbRef.current = data.fblink;
+      pfRef.current = data.profileimage;
+      setEkShow(true);
+    } else {
+      setWhoS("queen");
+      setEditid(data.id);
+      nameRef.current = data.name;
+      yearRef.current = data.year;
+      igRef.current = data.iglink;
+      fbRef.current = data.fblink;
+      pfRef.current = data.profileimage;
+      setEkShow(true);
+    }
+  };
 
   return (
     <div
@@ -618,8 +668,121 @@ const Selection = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <Modal
+        show={ekShow}
+        size="md"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header>
+          <Modal.Title>
+            <img
+              src={whoS === "king" ? I.king : I.queen}
+              alt="king crown"
+              style={{
+                width: 25,
+                height: 25,
+                marginRight: 5,
+                marginTop: -2,
+              }}
+            />
+
+            {whoS === "king" ? "Edit King Selection" : "Edit Queen Selection"}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group className="mb-3" controlId="register-control">
+            <Form.Label>Name</Form.Label>
+            <Form.Control
+              type="text"
+              className="mb-3"
+              placeholder="Name"
+              required
+              defaultValue={nameRef.current}
+              ref={nameRef}
+              // ref={titleRef}
+            />
+            <Form.Label>Years and Semester</Form.Label>
+
+            <Form.Control
+              type="text"
+              className="mb-3"
+              placeholder="Eg: 1CST"
+              required
+              defaultValue={yearRef.current}
+              // ref={dateRef}
+              // ref={r_name}
+              ref={yearRef}
+            />
+            <Form.Label>Facebook Profile Link</Form.Label>
+
+            <Form.Control
+              type="text"
+              className="mb-3"
+              placeholder="https://www.facebook.com/xxxxxxxxxxxx.xxxxx"
+              required
+              defaultValue={fbRef.current}
+              // ref={dateRef}
+              // ref={r_name}
+              ref={fbRef}
+            />
+            <Form.Label>Instagram Username</Form.Label>
+
+            <Form.Control
+              type="text"
+              className="mb-3"
+              placeholder="eg: thuralinhtut__"
+              required
+              defaultValue={igRef.current}
+              // ref={dateRef}
+              // ref={r_name}
+              ref={igRef}
+            />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant={"danger"} onClick={() => setEkShow(false)}>
+            Discard
+          </Button>
+          <Button
+            type="submit"
+            variant={"success"}
+            onClick={(e) => {
+              setAkShow(false);
+              if (whoS === "king") {
+                editKing.mutate({
+                  id: editid,
+                  name: nameRef.current.value,
+                  year: yearRef.current.value,
+                  fblink: fbRef.current.value,
+                  iglink: igRef.current.value,
+                  // profileimage: pfRef.current.files[0],
+                  votingcode: votingcode,
+                });
+                setEkShow(false);
+              } else if (whoS === "queen") {
+                editQueen.mutate({
+                  id: editid,
+                  name: nameRef.current.value,
+                  year: yearRef.current.value,
+                  fblink: fbRef.current.value,
+                  iglink: igRef.current.value,
+
+                  votingcode: votingcode,
+                });
+                setEkShow(false);
+              }
+            }}
+            // onClick={(e) => setModalShow(false)}
+          >
+            Edit {whoS === "king" ? "King" : "Queen"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <Container style={{ marginTop: 10 }}>
         <h3>Create Selection</h3>
+        <h5>{connectDeviceCount} Devices Connected</h5>
         <div
           style={{
             display: "flex",
@@ -729,23 +892,25 @@ const Selection = () => {
             </Col>
           </Row>
         ) : (
-            <>
-            {all_data.isFetching ? 
-                 <img src={I.loading} style={{ width: 50, height: 50 }} />
-                :
-          <div className={"profile_card"} style={{ marginTop: 50 }}>
-            {/* {JSON.stringify(all_data.data)} */}
-            
-            {all_data.data &&
-              display_data.map((item, index) => (
-                <QRCard
-                  item={item}
-                  Ondelete={DeletePeople}
-                  onImageOpen={onImageOpen}
-                  key={index}
-                />
-              ))}
-          </div>}
+          <>
+            {all_data.isFetching ? (
+              <img src={I.loading} style={{ width: 50, height: 50 }} />
+            ) : (
+              <div className={"profile_card"} style={{ marginTop: 50 }}>
+                {/* {JSON.stringify(all_data.data)} */}
+
+                {all_data.data &&
+                  display_data.map((item, index) => (
+                    <QRCard
+                      item={item}
+                      Ondelete={DeletePeople}
+                      onImageOpen={onImageOpen}
+                      key={index}
+                      onEdit={onEdit}
+                    />
+                  ))}
+              </div>
+            )}
           </>
         )}
       </Container>

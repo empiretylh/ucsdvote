@@ -37,6 +37,14 @@ class AuthService {
     });
   }
 
+  editKing(data) {
+    return axios.put(API_URL + "/api/selectionking/", data);
+  }
+
+  editqueen(data) {
+    return axios.put(API_URL + "/api/selectionqueen/", data);
+  }
+
   deleteKing(data) {
     return axios.delete(API_URL + "/api/selectionking/", {
       params: {
@@ -125,6 +133,17 @@ class AuthService {
         },
       });
     }
+  }
+
+  getDevice({queryKey}) {
+    const [_,votingcode] = queryKey;
+    console.log(votingcode)
+    return axios.get("/api/registerdevice/", {
+      params: {
+        votingcode: votingcode,
+      },
+    });
+   
   }
 
   admin() {
