@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
-import { Android2,QuestionCircle } from "react-bootstrap-icons";
+import { Android2, QuestionCircle } from "react-bootstrap-icons";
 import { IMAGE as I } from "../../assets/assets";
 const Download = () => {
   return (
@@ -22,21 +22,34 @@ const Download = () => {
             }}
           >
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <h1 style={{fontFamily:'Roboto-Bold'}}>Choose Your King and Queen Today.</h1>
-              <p style={{fontFamily:'Roboto-Regular'}}>
+              <h1 style={{ fontFamily: "Roboto-Bold", }}>
+                Choose Your King and Queen Today.
+              </h1>
+              <p style={{ fontFamily: "Roboto-Regular" }}>
                 Remember to vote Bhone Nay Lin. This app is only avaible for
-                andriod We are working for IOS, too. Thank you for your
+                andriod. We are working for IOS, too. Thank you for your
                 understanding.
               </p>
               <div>
-                <Button variant="primary" onClick={()=>{
-                  window.open('https://github.com/empiretylh/empire/raw/main/Voting/UCSD%20Voting.apk');
-                }}>
-                  <Android2 size={20} style={{marginRight:8}}/>Download App</Button>
-                  <Button variant="outline-black" style={{marginLeft:10}} onClick={()=>{
-                  // window.open('https://github.com/empiretylh/empire/raw/main/Voting/UCSD%20Voting.apk');
-                }}>
-                  <QuestionCircle size={20} style={{marginRight:8}}/>How to Vote?</Button>
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    window.open(
+                      "https://github.com/empiretylh/empire/raw/main/Voting/UCSD%20Voting.apk"
+                    );
+                  }}
+                >
+                  <Android2 size={20} style={{ marginRight: 8 }} />
+                  Download App
+                </Button>
+                <Button
+                  variant="outline-black"
+                  style={{ marginLeft: 10 }}
+                  onClick={() => {}}
+                >
+                  <QuestionCircle size={20} style={{ marginRight: 8 }} />
+                  How to Vote
+                </Button>
               </div>
             </div>
           </Col>
