@@ -102,6 +102,7 @@ const VotingMain = () => {
                   {token === null ? (
                     <>
                       <Route path="/" element={<Login />} />
+                      <Route path="/download" element={<Download />} />
                     </>
                   ) : (
                     <>

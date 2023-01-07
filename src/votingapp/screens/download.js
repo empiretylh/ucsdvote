@@ -22,13 +22,30 @@ const Download = () => {
             }}
           >
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <h1 style={{ fontFamily: "Roboto-Bold", }}>
+              <h1 style={{ fontFamily: "Roboto-Bold" }}>
                 Choose Your King and Queen Today.
               </h1>
               <p style={{ fontFamily: "Roboto-Regular" }}>
-                Remember to vote Bhone Nay Lin. This app is only avaible for
+                This app is only avaible for
                 andriod. We are working for IOS, too. Thank you for your
                 understanding.
+              </p>
+              <h4>SYSTEM REQUIREMENTS</h4>
+              <p>
+                Andriod Version: 5.1+
+                <br />
+                RAM: 512MB+
+                <br />
+                Size: 27MB
+                <br />
+                Version: 1.0
+              </p>
+              <h4>ANDROID PERMISSIONS</h4>
+              <p>
+               Camera Access (QRCode Scanning)
+                <br />
+                Internet Access
+    
               </p>
               <div>
                 <Button
